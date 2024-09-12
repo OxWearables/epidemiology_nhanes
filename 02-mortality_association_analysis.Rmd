@@ -4,6 +4,7 @@ output: rmarkdown::github_document
 editor_options: 
   markdown: 
     wrap: 72
+    
 ---
 
 # Basic Association Analysis Using the NHANES Accelerometer Data
@@ -22,13 +23,13 @@ each new analysis.
 
 We load packages:
 
-```{r}
+```{r, warning=F}
 # First we need to install packages that aren't already present
 pkgs <- c("data.table", "ggplot2", "survival", "table1", "IRdisplay", "dplyr")
 pkgs_inst <- pkgs[!{pkgs %in% rownames(installed.packages())}]
 install.packages(pkgs_inst, repos = "https://www.stats.bris.ac.uk/R/")
 
-options(bitmapType='cairo', digits = 3, warn=-1)
+options(bitmapType='cairo', digits = 3)
 
 # Load packages
 lapply(pkgs, library, character.only = TRUE)
@@ -263,7 +264,7 @@ print(plot_dat)
 
 We can then create a plot:
 
-```{r}
+```{r, warning=F}
 steps_cox_plot <- ggplot(plot_dat, aes(x = HR, y = var_name)) + # SET UP PLOT DATA 
   
   # AXES: SCALES AND LABELS
@@ -307,7 +308,7 @@ steps_cox_plot
 We could edit this plot to make it visually nicer, but for now we write
 it out to save it:
 
-```{r}
+```{r, warning=F}
 svg("steps_cox_plot.svg")
 print(steps_cox_plot)
 dev.off()

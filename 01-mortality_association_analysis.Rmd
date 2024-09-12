@@ -116,10 +116,12 @@ them to derive stepping-based metrics which we will now load and use.
 
 ### Load required packages
 
-```{r Packages}
+```{r Packages, warning=F}
 pkgs <- c("dplyr", "ggplot2","reshape2") # packages we need
-lapply(pkgs, library, character.only = TRUE) # using lapply just allows us to load several packages on one line - this could be replaced with several calls to library()
-rm(pkgs)
+pkgs_inst <- pkgs[!{pkgs %in% rownames(installed.packages())}]
+install.packages(pkgs_inst, repos = "https://www.stats.bris.ac.uk/R/")
+
+rm(pkgs,pkgs_inst)
 ```
 
 Now we load in the 3 separate files that have been generated for you:
@@ -192,7 +194,7 @@ sub-samples, so we've had a look at that below amongst other
 demographics. We've used a few ways of doing this, but feel free to make
 your own based on how you would normally do this.
 
-```{r Inspect data}
+```{r Inspect data, warning=F}
 # table summary for ethnicitiy and sex splits
 table(NHANES_data$ethnicity, NHANES_data$sex)
 
@@ -229,7 +231,7 @@ much more about from Prof. Laurent Servais later this afternoon. Let's
 look at the 3 produced by stepcount together so it's easier to compare
 them side-by-side.
 
-```{r Inspect cadence data}
+```{r Inspect cadence data, warning=F}
 NHANES_cad <- NHANES_data %>%
   select(CadencePeak1Adjusted.steps.min.,
          CadencePeak30Adjusted.steps.min.,
