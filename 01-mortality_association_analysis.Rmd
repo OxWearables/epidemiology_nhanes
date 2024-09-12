@@ -1,0 +1,298 @@
+---
+title: "R notebook"
+output: rmarkdown::github_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Accessing Data from NHANES
+
+## Introduction
+
+In this notebook, we will review the NHANES dataset.
+
+Specifically, we will:
+
+-   Review what Rmd is.
+-   Explain the study design of NHANES cohort.
+-   Load accelerometer and demographics data.
+-   Run Quality Control (QC) exclusions.
+-   Explore the data.
+
+## About this notebook
+
+This notebook was generated for use in the Machine learning short course
+by Ben Maylor and Charilaos Zisou.
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax
+for authoring documents combining text and code in a reproducible way.
+More info here <http://rmarkdown.rstudio.com>.
+
+For example, below is some code to print today's date so that we know
+when we ran this .Rmd file. To run it, press the green `play` button at
+the top right of the `chunk`. The output will appear underneath the
+chunk (NOT in the console as you may be used to).
+
+```{r date}
+Sys.Date()
+```
+
+This will also produce tables and figures inside the .Rmd source too:
+
+```{r plot, fig.height=3.5, fig.width=3.5}
+x <- 1:20
+y <- x^2
+plot(x,y)
+rm(x,y)
+```
+
+We will be using .Rmd for our sessions with NHANES data.
+
+The next section describes what NHANES is so we have understand the data
+better before exploring it and performing any epidemiology analysis on
+it.
+
+## NHANES introduction
+
+The National Health and Nutrition Examination Survey (NHANES) is a
+program of studies designed to assess the health and nutritional status
+of adults and children in the United States. Since 1999, The survey has
+examined a nationally representative sample of \~5,000 people each year
+located in counties across the USA.
+
+During these examinations, people provide demographic, socio-economic,
+dietary and health-related information via computer-based questions. A
+physical examination also produces medical, dental and physiological
+measurements and laboratory tests are conducted for biochemical
+measurements. There have been several sub-studies during NHANES where
+participants were also asked to wear an accelerometer for 7 days of
+free-living. More on that later...
+
+The majority of this data is made available online for public access.
+See: <https://wwwn.cdc.gov/nchs/nhanes/default.aspx>
+
+**The next 2 sections are just for your information to provide context
+to acquiring the data. You do not need to do anything.**
+
+### Downloading Demographic, Lab and Questionnaire data
+
+Data from each survey year can be downloaded individually through the
+website in .XPT format. For example, to download demographic information
+such as ethnicity, age, education level and household income, I navigate
+to
+<https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Demographics&CycleBeginYear=2011>,
+check the `Doc file` to see what is in the codebook for the `Data File`.
+when I am satisfied this is the correct data, I can just download the
+file directly to my pc. XPT files can easily be opened directly into R
+using the `haven` package.
+
+### Downloading Accelerometer Data
+
+NHANES has collected accelerometer data during the below years: 1.
+2003-2004 (Hip-worn ActiGraph) 2. 2005-2006 (Hip-worn ActiGraph) *3.
+2011-2012 (Wrist-worn ActiGraph)* *4. 2013-2014 (Wrist-worn ActiGraph)*
+
+For this workshop we are only interested in the wrist-worn datasets
+between 2011-2014 (in bold) which was made accessible \~2 years ago and
+has not been investigated as extensively as the earlier hip-worn data.
+The methods we have covered during this course for step counts, sleep
+and physical activity are also directly applicable to the wrist data.
+
+This data can be accessed through this link
+<https://wwwn.cdc.gov/nchs/nhanes/default.aspx> For example, if you
+navigate to `NHANES 2013-2014` \> Examination Data, you will see
+`Physical Activity Monitor - Raw Data 80Hz` available to download. This
+data currently comes in a compressed format for each participant, and
+contains up to 194 files split by hour of recording.
+
+Due to the time taken to download these and merge them, we have already
+downloaded the data, merged the files and run our stepcount package on
+them to derive stepping-based metrics which we will now load and use.
+
+## Load NHANES data
+
+### Load required packages
+
+```{r Packages}
+pkgs <- c("dplyr", "ggplot2","reshape2") # packages we need
+lapply(pkgs, library, character.only = TRUE) # using lapply just allows us to load several packages on one line - this could be replaced with several calls to library()
+rm(pkgs)
+```
+
+Now we load in the 3 separate files that have been generated for you:
+
+```{r Load NHANES data}
+data_steps <- read.csv("data/nhanes_stepcount.csv")
+data_mortality <- read.csv("data/nhanes_mortality.csv")
+data_covariates <- read.csv("data/nhanes_covariates.csv")
+```
+
+Then we merge them together so we have the one file to work with going
+forward
+
+```{r merge NHANES data}
+# Merge on steps_data so we automatically drop any participants who do not have any data from stepcount
+steps_mortality_data <- merge(data_mortality, data_steps, by = "eid")
+# Now add demographic data
+NHANES_data <- merge(data_covariates, steps_mortality_data)
+
+# Save this file in case we want to re-load it
+write.csv(NHANES_data, "data/nhanes_prepped_data.csv", row.names = F)
+
+# clean up the environment
+rm(steps_mortality_data, data_covariates, data_mortality, data_steps)
+```
+
+Now we can just work with NHANES_data going forward.
+
+## Run quality-related exclusions on the data
+
+Quality-related exclusions are really important in our field, as we will
+often have participants with poor data quality. For example: - Poor wear
+compliance, - Device failure or sensor error, - Premature battery
+depletion. - etc.
+
+Therefore before we explore the data or run any epi analysis, we will
+first clean our dataset using the following checks:
+
+-   Those with poor calibration (calibOK variable)
+
+-   Unrealistically high acceleration values over 24h (ENMO \>100mg)
+
+-   Insufficient wear time (\<3 days and coverage24hours=FALSE)
+
+**Exercise 1: If you usually do any additional cleaning in your group,
+please feel free to discuss it with the person next to you.**\
+An interesting review at the bottom (Pulsford, 2023) discusses different
+cleaning approaches.
+
+```{r QC}
+# Poor calibration
+NHANES_data <- NHANES_data %>%
+    filter(CalibOK == 1) %>%  # Poor calibration
+    filter(ENMO.mg. <100) %>% # High ENMO
+    filter(WearTime.days. >=3) %>% # Less than 3 valid days
+    filter(Covers24hOK == TRUE) %>% # Data does not cover the 24h timespan
+    filter(!is.na(StepsDayMedAdjusted))# Remove rows where median daily steps is NA
+
+# Save the cleaned file. We will be using this 
+write.csv(NHANES_data, "data/nhanes_prepped_data.csv", row.names = F)
+```
+
+## NHANES data exploration
+
+Now we can explore the data for the remainder of this session so we
+become more familiar with it.
+
+NHANES over-samples minority ethnicities and older adults amongst other
+sub-samples, so we've had a look at that below amongst other
+demographics. We've used a few ways of doing this, but feel free to make
+your own based on how you would normally do this.
+
+```{r Inspect data}
+# table summary for ethnicitiy and sex splits
+table(NHANES_data$ethnicity, NHANES_data$sex)
+
+# Histogram for bmi and age
+ggplot(NHANES_data) +
+  geom_histogram(aes(x=bmi), binwidth = 2.5) + theme_bw()
+
+ggplot(NHANES_data) +
+  geom_histogram(aes(x=age), binwidth = 5, fill = "grey80", colour = "black") + theme_bw()
+# Note the large sample in the oldest age bin in the histogram, because NHANES over-represents this demographic compared with the population
+
+# Or we can label the categories (using crude categories for white Europeans)
+NHANES_data %>%
+  mutate(bmi_cat = case_when(
+    bmi < 18.5 ~ "underweight",
+    bmi >= 18.5 & bmi < 25 ~ "healthy",
+    bmi >= 25 & bmi < 30 ~ "overweight",
+    bmi >= 30 & bmi < 35 ~ "obese_1",
+    bmi >= 35 & bmi < 40 ~ "obese_2",
+    bmi >= 40 ~ "obese_3"),
+    # Order the categories or else R will show them in alphanumerical order
+    bmi_cat = factor(bmi_cat, levels = c(
+      "underweight", "healthy", "overweight",
+      "obese_1", "obese_2", "obese_3"))) %>%
+  ggplot() +
+  geom_bar(aes(x=bmi_cat)) + theme_bw()
+
+# As we plan on doing some epi analysis, we should also look at the number of participants in the sample who have died according to the mortality data
+sum(NHANES_data$death_f == TRUE, na.rm = TRUE) # 479 deaths is what we got
+```
+
+We could also look at the peak cadences, one of which will you will hear
+much more about from Prof. Laurent Servais later this afternoon. Let's
+look at the 3 produced by stepcount together so it's easier to compare
+them side-by-side.
+
+```{r Inspect cadence data}
+NHANES_cad <- NHANES_data %>%
+  select(CadencePeak1Adjusted.steps.min.,
+         CadencePeak30Adjusted.steps.min.,
+         Cadence95thAdjusted.steps.min.) %>%
+  melt()
+
+  ggplot(NHANES_cad, aes(x=value)) + 
+    geom_histogram(binwidth = 5) +
+    scale_x_continuous(expand = c(0,0),breaks = seq(0,180,10)) +
+    facet_wrap(~variable, ncol=1, scales = "fixed") +
+    theme_bw() + labs(x = "Cadence (steps/min)", y = "Frequency")
+rm(NHANES_cad)
+```
+
+The above should hopefully make a bit more sense later on if you are
+less familiar with them.
+
+### Exercise 2: Self-exploration of the data
+
+Now we want you to have a go at exploring the stepcount-derived metrics
+yourself to see how active the group was. For this we will be looking at
+the adjusted values. refer to the data dictionary to make sure you
+understand what the variable is.
+
+Some good starting variables to explore: - WearTime.days. -
+ENMOAdjusted.mg. - StepsDayAvgAdjusted - StepsDayMedAdjusted
+
+```{r }
+# your exploratory code here
+
+
+```
+
+## Discussion points
+
+Having had a look at the data, discuss with the group or the person next
+to you:
+
+1.  Anything interesting you found in the data e.g. how active they are,
+    differences between weekend and weekday steps.
+2.  Any potential issues you encountered with the current dataset that
+    may need considering in tomorrows epidemiology analysis.
+
+## Further reading
+
+**How calibration and non-wear time are calculated by Stepcount**
+<https://biobankaccanalysis.readthedocs.io/en/latest/methods.html>
+
+**Accelerometer data quality-related cleaning:**
+
+-   Doherty,2017:
+    <https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0169649>
+
+-   Pulsford,2023:
+    <https://ijbnpa.biomedcentral.com/articles/10.1186/s12966-022-01388-9>
+
+**NHANES data documentation:** \
+<https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm>
+
+**An example of NHANES PA and mortality analysis (using earlier hip-worn
+accelerometer data):**
+
+-   Fishman,2016
+    <https://journals.lww.com/acsm-msse/fulltext/2016/07000/association_between_objectively_measured_physical.11.aspx>
+
+End of Notebook
