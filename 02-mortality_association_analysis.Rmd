@@ -68,7 +68,7 @@ dat$education <- factor(
 For simplicity, we will do a complete-case analysis. In other words, we
 will drop participants with missing data for our main covariates of
 interest. Alternatively, we could impute the missing data using
-[established approaches](https://www.bmj.com/content/338/bmj.b2393).
+established [methods](https://www.bmj.com/content/338/bmj.b2393).
 
 ```{r}
 dat <- dat[complete.cases(dat[, c("age",
@@ -141,10 +141,10 @@ mortality.
 
 ## Associations with risk of all-cause mortality
 
-The prepared mortality data consist of: 1) an event status indicator at
-exit (death_f), and 2) a follow-up time variable (fwup_years). Using
-these, we can run a Cox model to examine the association between daily
-step count and the risk of all-cause mortality. We'll start by using
+The mortality data consist of: 1) an event status indicator at exit
+(death_f), and 2) a follow-up time variable (fwup_years). Using these,
+we can run a Cox model to examine the association between daily step
+count and the risk of all-cause mortality. We'll start by using
 time-on-study as the timescale and set this up using the 'survival'
 package in R. We'll also adjust for some potential confounding
 variables, though this is not an exhaustive list:
@@ -157,8 +157,8 @@ cox_model <- coxph(
 summary(cox_model)
 ```
 
-The `exp(coef)` column gives the hazard ratio and the lower .95 and
-upper .95 columns its confidence interval.
+The `exp(coef)` column gives the hazard ratio and the `lower .95` and
+`upper .95` columns its confidence interval.
 
 Alternatively, we could analyse the data using [age as the
 timescale](https://journals.lww.com/epidem/Fulltext/2012/07000/Proportional_Hazards_Regression_in_Epidemiologic.9.aspx)
@@ -177,7 +177,7 @@ summary(cox_model_age_timescale)
 ```
 
 **Exercise 1:** Can you think of additional possible confounders that we
-should adjust for? How do we choose which confounders to use?
+should adjust for? How do we choose which confounders to include?
 
 We can now look at modelling assumptions, which we'll do using the first
 model above. A key assumption of Cox regression is the **proportional
@@ -204,7 +204,7 @@ It's sometimes hard to judge how important violations of the
 proportional hazards assumptions are. As the statistical tests just
 assess evidence against proportionality, they may detect even very
 modest non-proportionality, particularly if there is a lot of data.
-Therefore, it's always helpful to use some graphical method.
+Therefore, it's always helpful to include some graphical method.
 
 ## Presenting results
 
@@ -321,10 +321,10 @@ In observational epidemiological studies, we are often concerned about
 *reverse causation bias*. This type of bias occurs when the direction of
 cause and effect is mistaken, i.e. instead of the exposure influencing
 the outcome, the outcome may influence the exposure. In our example, it
-could be that some individuals have reduced their daily steps levels due
-to underlying health conditions. As a result, it may seem that lower
-daily steps lead to higher mortality, when in fact the association is
-driven by pre-existing disease.
+could be that some individuals have reduced their daily steps due to
+underlying health conditions. As a result, it may seem that lower daily
+steps lead to higher mortality, when in fact the association is driven
+by pre-existing disease.
 
 To assess the potential for reverse causation bias influencing the
 results, researchers often conduct sensitivity analyses excluding
@@ -344,10 +344,3 @@ first 4 years of follow-up. What do you observe?
 
 ## Cox model for exercise 3
 ```
-
-## Credits
-
-This notebook was generated for use in the Machine Learning short course
-by Ben Maylor and Charilaos Zisou, using material by Rosemary Walmsley
-and Junayed Naushad, with contributions and advice from Ondrej Klempir,
-Aiden Doherty, and Ben Busby.
