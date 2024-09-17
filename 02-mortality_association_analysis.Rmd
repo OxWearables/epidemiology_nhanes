@@ -4,7 +4,6 @@ output: rmarkdown::github_document
 editor_options: 
   markdown: 
     wrap: 72
-    
 ---
 
 # Basic Association Analysis Using the NHANES Accelerometer Data
@@ -25,7 +24,7 @@ We load packages:
 
 ```{r, warning=F}
 # First we need to install packages that aren't already present
-pkgs <- c("data.table", "ggplot2", "survival", "table1", "IRdisplay", "dplyr")
+pkgs <- c("data.table", "ggplot2", "survival", "table1", "dplyr")
 pkgs_inst <- pkgs[!{pkgs %in% rownames(installed.packages())}]
 install.packages(pkgs_inst, repos = "https://www.stats.bris.ac.uk/R/")
 
@@ -40,11 +39,11 @@ We load the data we prepared earlier and make sure categorical variables
 are coded as factors:
 
 ```{r}
-dat <- fread("data/nhanes_prepped_data.csv", data.table = FALSE)
+dat_full <- fread("data/nhanes_prepped_data.csv", data.table = FALSE)
 
 # We create factors and define the ordering of levels 
-dat$ethnicity <- factor(
-  dat$ethnicity,
+dat_full$ethnicity <- factor(
+  dat_full$ethnicity,
   levels = c(
     "Mexican American",
     "Other Hispanic",
@@ -54,8 +53,8 @@ dat$ethnicity <- factor(
   )
 )
 
-dat$education <- factor(
-  dat$education,
+dat_full$education <- factor(
+  dat_full$education,
   levels = c(
     "Less than 9th grade",
     "9-11th grade (Includes 12th grade with no diploma)",
@@ -72,13 +71,20 @@ interest. Alternatively, we could impute the missing data using
 established [methods](https://www.bmj.com/content/338/bmj.b2393).
 
 ```{r}
-dat <- dat[complete.cases(dat[, c("age",
-                                  "sex",
-                                  "ethnicity",
-                                  "education",
-                                  "smoking_current",
-                                  "bmi",
-                                  "any_disease")]), ]
+dat <- dat_full[complete.cases(dat_full[, c("age",
+                                            "sex",
+                                            "ethnicity",
+                                            "education",
+                                            "smoking_current",
+                                            "bmi",
+                                            "any_disease")]), ]
+```
+
+**Exercise 1:** How many participants were excluded from the analysis?
+Do you consider this number acceptable?
+
+```{r}
+## write code for exercise 1
 ```
 
 We split daily steps into quarters:
@@ -109,7 +115,10 @@ label(dat$sex) <- "Sex"
 label(dat$ethnicity) <- "Ethnicity"
 label(dat$education) <- "Education level"
 label(dat$smoking_current) <- "Current smoker"
+label(dat$alcohol) <- "Drinks per week"
 label(dat$bmi) <- "Body mass index"
+label(dat$med_bp) <- "Medication for high blood pressure"
+label(dat$med_chol) <- "Medication for high cholesterol"
 label(dat$any_disease) <- "Any prior disease"
 units(dat$age) <- "years"
 units(dat$steps_quarters) <- "steps/day"
@@ -136,6 +145,9 @@ print(tab_desc) # Show table
 write(tab_desc, "descriptive_table.html")
 ```
 
+**Exercise 2:** Do you observe any differences in participant
+characteristics across the different quarters of daily steps?
+
 There's much more we could do here, but for now we will move on to
 analysing the association of daily step count with the risk of all-cause
 mortality.
@@ -143,8 +155,16 @@ mortality.
 ## Associations with risk of all-cause mortality
 
 The mortality data consist of: 1) an event status indicator at exit
-(death_f), and 2) a follow-up time variable (fwup_years). Using these,
-we can run a Cox model to examine the association between daily step
+(death_f), and 2) a follow-up time variable (fwup_years).
+
+**Exercise 3:** What is the median follow-up time and how many deaths
+occurred?
+
+```{r}
+## write code for exercise 3
+```
+
+We can run a Cox model to examine the association between daily step
 count and the risk of all-cause mortality. We'll start by using
 time-on-study as the timescale and set this up using the 'survival'
 package in R. We'll also adjust for some potential confounding
@@ -158,8 +178,13 @@ cox_model <- coxph(
 summary(cox_model)
 ```
 
-The `exp(coef)` column gives the hazard ratio and the `lower .95` and
-`upper .95` columns its confidence interval.
+The `exp(coef)` column gives the hazard ratio (HR) and the `lower .95`
+and `upper .95` columns its 95% confidence interval (CI).
+
+For example, the HR for the top vs bottom quarter is 0.28 (95% CI
+0.20-0.39). This means that participants in the top quarter of daily
+step count had a 72% lower risk of death compared to those in the bottom
+quarter, after adjusting for potential confounders.
 
 Alternatively, we could analyse the data using [age as the
 timescale](https://journals.lww.com/epidem/Fulltext/2012/07000/Proportional_Hazards_Regression_in_Epidemiologic.9.aspx)
@@ -177,8 +202,8 @@ cox_model_age_timescale <- coxph(
 summary(cox_model_age_timescale)
 ```
 
-**Exercise 1:** Can you think of additional possible confounders that we
-should adjust for? How do we choose which confounders to include?
+**Exercise 4:** Can you think of additional potential confounders that
+we should adjust for? How do we choose which confounders to include?
 
 We can now look at modelling assumptions, which we'll do using the first
 model above. A key assumption of Cox regression is the **proportional
@@ -332,16 +357,18 @@ results, researchers often conduct sensitivity analyses excluding
 participants with prior disease or [excluding the first few years of
 follow-up](https://academic.oup.com/ije/article/49/1/162/5607291).
 
-**Exercise 2:** Examine the association between daily step count and
+**Exercise 5:** Examine the association between daily step count and
 all-cause mortality among participants without prior disease. How does
 it compare with the previous association? Why do you think that is?
 
-**Exercise 3:** Examine the association between daily step count and
+**Exercise 6:** Examine the association between daily step count and
 all-cause mortality after excluding participants who died within the
 first 4 years of follow-up. What do you observe?
 
 ```{r}
-## Cox model for exercise 2
+## write code for exercise 5
+```
 
-## Cox model for exercise 3
+```{r}
+## write code for exercise 6
 ```
