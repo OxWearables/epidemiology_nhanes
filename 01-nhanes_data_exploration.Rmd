@@ -45,8 +45,8 @@ This will also produce tables and figures inside the .Rmd source too:
 ```{r plot, fig.height=3.5, fig.width=3.5}
 x <- 1:20
 y <- x^2
-plot(x,y)
-rm(x,y)
+plot(x, y)
+rm(x, y)
 ```
 
 We have added a few empty chunks for you to add your own code. Though if
@@ -129,11 +129,13 @@ First we will load the libraries that we intend to use in the following
 sections:
 
 ```{r Packages, warning=FALSE}
-pkgs <- c("dplyr", "ggplot2","reshape2") # packages we need
-pkgs_inst <- pkgs[!{pkgs %in% rownames(installed.packages())}]
+pkgs <- c("dplyr", "ggplot2", "reshape2") # packages we need
+pkgs_inst <- pkgs[!{
+  pkgs %in% rownames(installed.packages())
+}]
 install.packages(pkgs_inst, repos = "https://www.stats.bris.ac.uk/R/")
-lapply(pkgs, library, character.only=TRUE)
-rm(pkgs,pkgs_inst)
+lapply(pkgs, library, character.only = TRUE)
+rm(pkgs, pkgs_inst)
 ```
 
 Now we load in the 3 separate files that have been generated for you:
@@ -190,16 +192,16 @@ nrow(NHANES_data)
 
 # Data Quality-related cleaning
 NHANES_data <- NHANES_data %>%
-    filter(CalibOK == 1) %>%  # Poor calibration
-    filter(ENMO.mg. <100) %>% # High ENMO
-    filter(WearTime.days. >=3) %>% # Less than 3 valid days
-    filter(Covers24hOK == TRUE) %>% # Data does not cover the 24h timespan
-    filter(!is.na(StepsDayMedAdjusted))# Remove rows where median daily steps is NA
+  filter(CalibOK == 1) %>% # Poor calibration
+  filter(ENMO.mg. < 100) %>% # High ENMO
+  filter(WearTime.days. >= 3) %>% # Less than 3 valid days
+  filter(Covers24hOK == TRUE) %>% # Data does not cover the 24h timespan
+  filter(!is.na(StepsDayMedAdjusted)) # Remove rows where median daily steps is NA
 
 # N files after cleaning
 nrow(NHANES_data)
 
-# Save the cleaned file. We will be using this 
+# Save the cleaned file. We will be using this
 write.csv(NHANES_data, "data/nhanes_prepped_data.csv", row.names = F)
 ```
 
@@ -210,6 +212,11 @@ write.csv(NHANES_data, "data/nhanes_prepped_data.csv", row.names = F)
 
 -   Based on the numbers above, what was the compliance rate for monitor
     wear for our analysis?
+
+```{r Compliance calculation}
+# your code here #
+
+```
 
 ## NHANES data exploration
 
@@ -233,28 +240,34 @@ table(NHANES_data$ethnicity, NHANES_data$sex)
 
 # Histogram for bmi and age
 ggplot(NHANES_data) +
-  geom_histogram(aes(x=bmi), binwidth = 2.5) + theme_bw()
+  geom_histogram(aes(x = bmi), binwidth = 2.5) +
+  theme_bw()
 
 ggplot(NHANES_data) +
-  geom_histogram(aes(x=age), binwidth = 5, fill = "grey80", colour = "black") + theme_bw()
+  geom_histogram(aes(x = age), binwidth = 5, fill = "grey80", colour = "black") +
+  theme_bw()
 # Note the large sample in the oldest age bin in the histogram, because NHANES over-represents this demographic compared with the population
 
 # Or we can label the categories (using crude categories for white Europeans)
 NHANES_data %>%
-  mutate(bmi_cat = case_when(
-    bmi < 18.5 ~ "underweight",
-    bmi >= 18.5 & bmi < 25 ~ "healthy",
-    bmi >= 25 & bmi < 30 ~ "overweight",
-    bmi >= 30 & bmi < 35 ~ "obese_1",
-    bmi >= 35 & bmi < 40 ~ "obese_2",
-    bmi >= 40 ~ "obese_3"),
+  mutate(
+    bmi_cat = case_when(
+      bmi < 18.5 ~ "underweight",
+      bmi >= 18.5 & bmi < 25 ~ "healthy",
+      bmi >= 25 & bmi < 30 ~ "overweight",
+      bmi >= 30 & bmi < 35 ~ "obese_1",
+      bmi >= 35 & bmi < 40 ~ "obese_2",
+      bmi >= 40 ~ "obese_3"
+    ),
     # Order the categories or else R will show them in alphanumerical order
     bmi_cat = factor(bmi_cat, levels = c(
       "underweight", "healthy", "overweight",
-      "obese_1", "obese_2", "obese_3"))) %>%
+      "obese_1", "obese_2", "obese_3"
+    ))
+  ) %>%
   ggplot() +
-  geom_bar(aes(x=bmi_cat)) + theme_bw()
-
+  geom_bar(aes(x = bmi_cat)) +
+  theme_bw()
 ```
 
 ### **Exercise 2:** Summarise deaths
@@ -265,7 +278,6 @@ NHANES_data %>%
     `dth_oth_f`
 
 ```{r Death summaries}
-
 # your code here #
 
 ```
@@ -277,16 +289,19 @@ them side-by-side.
 
 ```{r Inspect cadence data, warning=F}
 NHANES_cad <- NHANES_data %>%
-  select(CadencePeak1Adjusted.steps.min.,
-         CadencePeak30Adjusted.steps.min.,
-         Cadence95thAdjusted.steps.min.) %>%
+  select(
+    CadencePeak1Adjusted.steps.min.,
+    CadencePeak30Adjusted.steps.min.,
+    Cadence95thAdjusted.steps.min.
+  ) %>%
   melt()
 
-  ggplot(NHANES_cad, aes(x=value)) + 
-    geom_histogram(binwidth = 5) +
-    scale_x_continuous(expand = c(0,0),breaks = seq(0,180,10)) +
-    facet_wrap(~variable, ncol=1, scales = "fixed") +
-    theme_bw() + labs(x = "Cadence (steps/min)", y = "Frequency")
+ggplot(NHANES_cad, aes(x = value)) +
+  geom_histogram(binwidth = 5) +
+  scale_x_continuous(expand = c(0, 0), breaks = seq(0, 180, 10)) +
+  facet_wrap(~variable, ncol = 1, scales = "fixed") +
+  theme_bw() +
+  labs(x = "Cadence (steps/min)", y = "Frequency")
 rm(NHANES_cad)
 ```
 
@@ -302,7 +317,7 @@ understand what the variable is.
 
 Some good starting variables to explore:
 
--    `WearTime.days.`
+-   `WearTime.days.`
 
 -   `ENMOAdjusted.mg.`
 
@@ -310,7 +325,7 @@ Some good starting variables to explore:
 
 -   `StepsDayMedAdjusted`
 
-```{r }
+```{r Inspect other variables}
 # Your code here #
 
 ```
@@ -322,15 +337,15 @@ to you:
 
 1.  How active is the dataset as a whole?
 2.  Are there any differences in stepping metrics between weekend and
-    weekday steps? \
+    weekday steps?\
     *hint: you can mostly copy the code used from the previous chunk to
     view this.*
 3.  Are there any summaries for any variables which you feel may need
     considering in tomorrows epidemiology analysis?
 
-```{r}
-
+```{r Additional exploration}
 # Your code here #
+
 ```
 
 ## Further reading
