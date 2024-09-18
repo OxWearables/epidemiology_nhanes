@@ -85,6 +85,7 @@ Do you consider this number acceptable?
 
 ```{r}
 ## write code for exercise 1
+
 ```
 
 We split daily steps into quarters:
@@ -162,6 +163,7 @@ occurred?
 
 ```{r}
 ## write code for exercise 3
+
 ```
 
 We can run a Cox model to examine the association between daily step
@@ -204,6 +206,8 @@ summary(cox_model_age_timescale)
 
 **Exercise 4:** Can you think of additional potential confounders that
 we should adjust for? How do we choose which confounders to include?
+
+## Proportional hazards assumption
 
 We can now look at modelling assumptions, which we'll do using the first
 model above. A key assumption of Cox regression is the **proportional
@@ -367,8 +371,12 @@ first 4 years of follow-up. What do you observe?
 
 ```{r}
 ## write code for exercise 5
+
 ```
 
 ```{r}
 ## write code for exercise 6
+
 ```
+
+End of Notebook
