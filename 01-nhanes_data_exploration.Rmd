@@ -163,8 +163,8 @@ rm(steps_mortality_data, data_covariates, data_mortality, data_steps)
 ```
 
 Now we can just work with NHANES_data going forward. You can access a
-data dictionary in this repo which describes what each variable in the
-dataset is.
+data dictionary in this repo `nhanes_data_dictionary.xlsx` which
+describes what each variable in the dataset is.
 
 ## Run quality-related exclusions on the data
 
@@ -340,8 +340,9 @@ to you:
     weekday steps?\
     *hint: you can mostly copy the code used from the previous chunk to
     view this.*
-3.  Are there any summaries for any variables which you feel may need
-    considering in tomorrows epidemiology analysis?
+3.  Are there any summaries from the accelerometer data (we will go
+    through demographics tomorrow) for any variables which you feel may
+    need considering in tomorrows epidemiology analysis?
 
 ```{r Additional exploration}
 # Your code here #
