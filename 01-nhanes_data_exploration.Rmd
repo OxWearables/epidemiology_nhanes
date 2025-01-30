@@ -22,8 +22,9 @@ Specifically, we will:
 
 ## About this notebook
 
-This notebook was generated for use in the Machine learning short course
-by Ben Maylor and Charilaos Zisou.
+This notebook was generated for use in Machine learning short courses
+delivered by the Oxford Wearables Group by Ben Maylor and Charilaos
+Zisou.
 
 ## R Markdown
 
@@ -55,8 +56,8 @@ you want to add your own just type \`\`\`{r} and hit enter.
 We will be using .Rmd for our two sessions working with NHANES data.
 
 The next section describes what NHANES is so we have understand the data
-better before exploring it and performing any epidemiology analysis on
-it.
+better before a) exploring it and b) performing any epidemiology
+analyses on it.
 
 ## NHANES introduction
 
@@ -211,7 +212,8 @@ write.csv(NHANES_data, "data/nhanes_prepped_data.csv", row.names = F)
     your group? Discuss this with those around you.
 
 -   Based on the numbers above, what was the compliance rate for monitor
-    wear for our analysis?
+    wear for our analysis? hint: This is usually expressed as a
+    percentage
 
 ```{r Compliance calculation}
 # your code here #
@@ -282,10 +284,16 @@ NHANES_data %>%
 
 ```
 
-We could also look at the peak cadences, one of which will you will hear
-much more about from Prof. Laurent Servais later this afternoon. Let's
-look at the 3 produced by stepcount together so it's easier to compare
-them side-by-side.
+We could also look at the peak cadences, which are calculated as the
+mean cadence for highest xx minutes of stepping windows. We also include
+a 95th percentile value for cadences to mirror work done by Prof Laurent
+Servais in children with Duchenne muscular dystrophy (DMD):
+
+**Servais et al. 2024:**
+<https://www.nature.com/articles/s41598-024-80177-9>
+
+Let's look at the 3 produced by stepcount together so it's easier to
+compare them side-by-side.
 
 ```{r Inspect cadence data, warning=F}
 NHANES_cad <- NHANES_data %>%
@@ -305,8 +313,8 @@ ggplot(NHANES_cad, aes(x = value)) +
 rm(NHANES_cad)
 ```
 
-The above should now make a bit more sense later on during his lecture
-if you were less familiar with them before.
+The above should now make a bit more sense if you choose to explore the
+values in greater detail.
 
 ### Exercise 3: Self-exploration of the data
 
@@ -339,8 +347,12 @@ to you:
 2.  Are there any differences in stepping metrics between weekend and
     weekday steps?\
     *hint: you can mostly copy the code used from the previous chunk to
-    view this.*
-3.  Are there any summaries from the accelerometer data (we will go
+    view this*
+3.  How active is this sample in the US compared with the UK? We used
+    stepcount in UK BioBank here: **Small et al. 2024**
+    <https://journals.lww.com/acsm-msse/fulltext/2024/10000/self_supervised_machine_learning_to_characterize.9.aspx>
+4.  Can you explain any differences in behaviour between the 2 groups?
+5.  Are there any summaries from the accelerometer data (we will go
     through demographics tomorrow) for any variables which you feel may
     need considering in tomorrows epidemiology analysis?
 

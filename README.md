@@ -4,7 +4,9 @@
 
 This repository provides a **worked example of using wearables data available in NHANES for an epidemiological analysis associating daily step count with the risk of all-cause mortality**. Analyses are based on [this paper](https://journals.lww.com/acsm-msse/fulltext/2024/10000/self_supervised_machine_learning_to_characterize.9.aspx) conducted in the UK Biobank.
 
-The included R markdown files describe: - (1) Exploring the NHANES accelerometer data - (2) Conducting an analysis associating daily step count with the risk of all-cause mortality
+The included R markdown files describe: \
+(1) Exploring the NHANES accelerometer data generated using stepcount. \
+(2) Conducting an analysis associating daily step count with the risk of all-cause mortality.
 
 Visual inspection of the data is invaluable for understanding what the code is doing. Add statements to get a feel for the data as you work through the tutorials (e.g. `head()`, `str()` statements in R).
 
@@ -12,16 +14,13 @@ Visual inspection of the data is invaluable for understanding what the code is d
 
 Analytic decisions should be made in the context of each research project. Choices in this repository reflect choices of the authors in the linked papers and the code authors, and should not be interpreted as definitive or widely generalisable.
 
-## Instructions for participants of the 2024 Reproducible Machine Learning of Wearables in Health Data Science course
+## Instructions for participants of the Reproducible Machine Learning of Wearables in Health Data Science short course
 
-I. Launch JupyterLab by navigating to <https://wearables2024.bmrc.ox.ac.uk/>
+I. Launch JupyterLab and Clone the repository by opening the relevant link to your group which has already been provided to you:\
+\
+OR
 
-II. Clone the repository by opening the relevant link to your group: \
-    **Group A:** <https://wearables2024-1.bmrc.ox.ac.uk/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FOxWearables%2Fepidemiology_nhanes&urlpath=rstudio%2F&branch=main> **Group B:** [https://wearables2024-2.bmrc.ox.ac.uk/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FOxWearables%2Fepidemiology_nhanes&urlpath=rstudio%2F&branch=main](https://wearables2024-1.bmrc.ox.ac.uk/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FOxWearables%2Fepidemiology_nhanes&urlpath=rstudio%2F&branch=main){.uri}
-
-    OR
-
-III. Open a Terminal instance from JupyterLab (File \> New \> Terminal) and then run:
+II\. Open a Terminal instance from JupyterLab (File \> New \> Terminal) and then run:
 
 ``` shell
 $ git clone https://github.com/OxWearables/epidemiology_nhanes.git
