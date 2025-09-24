@@ -24,15 +24,11 @@ We load packages:
 
 ```{r, warning=F}
 # First we need to install packages that aren't already present
-pkgs <- c("data.table", "ggplot2", "survival", "table1", "dplyr")
-pkgs_inst <- pkgs[!{pkgs %in% rownames(installed.packages())}]
-install.packages(pkgs_inst, repos = "https://www.stats.bris.ac.uk/R/")
+if(!require(pacman)) install.packages("pacman")
+pacman::p_load(data.table, ggplot2, survival, table1, dplyr) # packages needed
 
 options(bitmapType='cairo', digits = 3)
 
-# Load packages
-lapply(pkgs, library, character.only = TRUE)
-# using lapply just allows us to load several packages on one line
 ```
 
 We load the data we prepared earlier and make sure categorical variables
