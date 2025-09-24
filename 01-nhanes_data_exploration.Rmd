@@ -130,13 +130,9 @@ First we will load the libraries that we intend to use in the following
 sections:
 
 ```{r Packages, warning=FALSE}
-pkgs <- c("dplyr", "ggplot2", "reshape2") # packages we need
-pkgs_inst <- pkgs[!{
-  pkgs %in% rownames(installed.packages())
-}]
-install.packages(pkgs_inst, repos = "https://www.stats.bris.ac.uk/R/")
-lapply(pkgs, library, character.only = TRUE)
-rm(pkgs, pkgs_inst)
+if(!require(pacman)) install.packages("pacman")
+pacman::p_load(dplyr, ggplot2, reshape2) # packages needed
+
 ```
 
 Now we load in the 3 separate files that have been generated for you:
@@ -164,7 +160,7 @@ rm(steps_mortality_data, data_covariates, data_mortality, data_steps)
 ```
 
 Now we can just work with NHANES_data going forward. You can access a
-data dictionary in this repo `nhanes_data_dictionary.xlsx` which
+data dictionary in this repo `nhanes_data_dictionary.csv` which
 describes what each variable in the dataset is.
 
 ## Run quality-related exclusions on the data
@@ -212,8 +208,8 @@ write.csv(NHANES_data, "data/nhanes_prepped_data.csv", row.names = F)
     your group? Discuss this with those around you.
 
 -   Based on the numbers above, what was the compliance rate for monitor
-    wear for our analysis? hint: This is usually expressed as a
-    percentage
+    wear for our analysis? \
+    *hint: This is usually expressed as a percentage*
 
 ```{r Compliance calculation}
 # your code here #
@@ -320,7 +316,7 @@ values in greater detail.
 
 Now we want you to have a go at exploring the stepcount-derived metrics
 yourself to see how active the group was. For this we will be looking at
-the adjusted values. refer to the data dictionary to make sure you
+the **adjusted** values. Refer to the data dictionary to make sure you
 understand what the variable is.
 
 Some good starting variables to explore:
