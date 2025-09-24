@@ -237,7 +237,7 @@ rsconnect/
 # Data================================================================================
 # Some credit to the internet (e.g. https://www.computerhope.com/issues/ch001789.htm#database)
 # General
-**/*.csv
+**/nhanes_prepped_data.csv
 # R
 **/*.RDS
 **/*.rds

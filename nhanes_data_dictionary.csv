@@ -1,0 +1,48 @@
+Name,Description,Type / Unit
+eid,Electronic identification,N/A
+age,Age of the participant at the time of screening,Years
+sex,Sex of the participant,Category
+ethnicity,Reported race and Hispanic origin information,Category
+education,Education level,Category
+smoking_current,Current smoker,Logical
+alcohol,Alcohol intake,units/week
+bmi,Body mass index,km/m2
+med_bp,Blood pressure medication,Logical
+med_chol,cholesterol-lowering medication,Logical
+any_disease,any diagnosed disease,Logical
+mi,history of myocardial infaction?,Logical
+stroke,History of stroke,Logical
+hf,Diagnosed heart failure,Logical
+cancer,Diagnosed cancer,Logical
+diabetes,Diagnosed diabetes,Logical
+death_f,Participant death,Logical
+dth_cvd_f,Participant death with cardiovascular disease the underlying cause,Logical
+dth_can_f,Participant death with cancer the underlying cause,Logical
+dth_oth_f,Participant death with other reason as the underlying cause,Logical
+ucod_leading,underlying cause of death code,Category
+fwup_years,duration of follow-up since screening,Years
+CalibOK,Calbration passed,Logical
+WearTime.days.,Duration of accelerometer wear data,Days
+NonwearTime.days.,Duration of accelerometer non-wear data,Days
+Covers24hOK,Valid wear data covers the 24h clock across the whole recording,Logical
+ENMOAdjusted.mg.,"Average acceleration for each day across the accelerometer monitoring period, including imputated values.",milli-gravitational units (mg)
+ENMOAdjusted.mg._Weekend,"Average acceleration for weekend days across the accelerometer monitoring period, including imputated values.",milli-gravitational units (mg)
+ENMOAdjusted.mg._Weekday,"Average acceleration for weekdays across the accelerometer monitoring period, including imputated values.",milli-gravitational units (mg)
+StepsDayAvgAdjusted,"Average daily steps, with imputation for non-wear",n steps
+StepsDayMedAdjusted,"Median daily steps, with imputation for non-wear",n steps
+StepsDayMinAdjusted,"Minimum daily steps, with imputation for non-wear",n steps
+StepsDayMaxAdjusted,"Maximum daily steps, with imputation for non-wear",n steps
+StepsDayAvgAdjusted_Weekend,"Average daily steps for weekend days, with imputation for non-wear",n steps
+StepsDayAvgAdjusted_Weekday,"Average daily steps for weekdays, with imputation for non-wear",n steps
+WalkingDayAvgAdjusted.mins.,"Average daily walking duration, with imputation for non-wear",minutes
+WalkingDayMedAdjusted.mins.,"Median daily walking duration, with imputation for non-wear",minutes
+CadencePeak1Adjusted.steps.min.,"Mean cadence for the highest cadence recorded in one minute of the day, averaged across all days. Includes data imputation.",steps/min
+CadencePeak30Adjusted.steps.min.,"Mean cadence for the highest 30 minutes (not necessarily continuours) cadence, averaged across all days. Includes data imputation.",steps/min
+Cadence95thAdjusted.steps.min.,"95th percentile of cadence of the day, averaged across all days. Includes data imputation.",steps/min
+StepsDayAvg,"Average daily steps, with no imputation",n steps
+CadencePeak1.steps.min.,"Mean cadence for the highest cadence recorded in one minute of the day, averaged across all days. No imputation.",steps/min
+CadencePeak30.steps.min.,"Mean cadence for the highest 30 minutes (not necessarily continuours) cadence, averaged across all days. No imputation.",steps/min
+Cadence95th.steps.min.,"95th percentile of cadence of the day, averaged across all days. No imputation.",steps/min
+ENMO.mg.,"Average acceleration for each day across the accelerometer monitoring period, with no imputation.",milli-gravitational units (mg)
+ENMO.mg._Weekend,"Average acceleration for weekend days across the accelerometer monitoring period, with no imputation.",milli-gravitational units (mg)
+ENMO.mg._Weekday,"Average acceleration for weekdays across the accelerometer monitoring period, with no imputation.",milli-gravitational units (mg)
