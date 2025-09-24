@@ -14,27 +14,23 @@ Visual inspection of the data is invaluable for understanding what the code is d
 
 Analytic decisions should be made in the context of each research project. Choices in this repository reflect choices of the authors in the linked papers and the code authors, and should not be interpreted as definitive or widely generalisable.
 
-## Instructions for participants of the Reproducible Machine Learning of Wearables in Health Data Science short course
+## Instructions for use
 
-I. Launch JupyterLab and Clone the repository by opening the relevant link to your group which has already been provided to you:\
-\
-OR
-
-II\. Open a Terminal instance from JupyterLab (File \> New \> Terminal) and then run:
+1\. Open a Terminal instance from JupyterLab (File \> New \> Terminal) and then run:
 
 ``` shell
 $ git clone https://github.com/OxWearables/epidemiology_nhanes.git
 ```
 
-IV. To work with the repository, change the directory into the repository:
+2\. To work with the repository, change the directory into the repository:
 
 ``` shell
 $ cd epidemiology_nhanes
 ```
 
-V. Open an RStudio session from JupyterLab (File \> New Launcher \> RStudio)
+3\. Open an RStudio session from JupyterLab (File \> New Launcher \> RStudio)
 
-VI. You can now open and run the R markdown files from the `epidemiology_nhanes` directory located on the bottom right panel (Files).
+4\. You can now open and run the R markdown files from the `epidemiology_nhanes` directory located on the bottom right panel (Files).
 
 ## Question? Bugs?
 
