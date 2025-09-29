@@ -37,7 +37,15 @@ are coded as factors:
 ```{r}
 dat_full <- fread("data/nhanes_prepped_data.csv", data.table = FALSE)
 
-# We create factors and define the ordering of levels 
+# We create factors and define the ordering of levels
+dat_full$sex <- factor(
+  dat_full$sex,
+  levels = c(
+    "Male",
+    "Female"
+  )
+)
+
 dat_full$ethnicity <- factor(
   dat_full$ethnicity,
   levels = c(
